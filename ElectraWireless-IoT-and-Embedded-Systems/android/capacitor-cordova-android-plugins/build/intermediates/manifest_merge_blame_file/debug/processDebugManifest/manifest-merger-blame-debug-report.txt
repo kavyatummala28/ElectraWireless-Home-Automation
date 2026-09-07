@@ -1,0 +1,28 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:amazon="http://schemas.amazon.com/apk/res/android"
+3    xmlns:android="http://schemas.android.com/apk/res/android"
+4    package="capacitor.cordova.android.plugins" >
+5
+6    <uses-sdk android:minSdkVersion="24" />
+7
+8    <uses-permission android:name="android.permission.WAKE_LOCK" />
+8-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:7:1-63
+8-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:7:18-61
+9    <uses-permission android:name="android.permission.BLUETOOTH" />
+9-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:8:1-63
+9-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:8:18-61
+10    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+10-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:9:1-69
+10-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:9:18-67
+11    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+11-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:10:1-76
+11-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:10:18-74
+12
+13    <application>
+13-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:4:1-6:15
+14        <service android:name="de.appplant.cordova.plugin.background.ForegroundService" />
+14-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:5:1-82
+14-->C:\Users\Kavya Tummala\Downloads\ElectraWireless-IoT-and-Embedded-Systems (1)\ElectraWireless-IoT-and-Embedded-Systems\android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml:5:10-80
+15    </application>
+16
+17</manifest>

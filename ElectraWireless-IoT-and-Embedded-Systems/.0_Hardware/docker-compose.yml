@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 1. The Message Bus (MQTT Broker)
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt_broker
+    ports:
+      - "1883:1883"       # MQTT Standard Port
+      - "9001:9001"       # MQTT over WebSockets
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    restart: unless-stopped
+
+  # 2. The Device Manager (Home Assistant)
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home_assistant
+    volumes:
+      - ./homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host # Crucial for discovering local Matter, BLE, and LAN devices
+    restart: unless-stopped
+
+  # 3. The Logic & Routing Engine (Node-RED)
+  nodered:
+    image: nodered/node-red:latest
+    container_name: node_red
+    ports:
+      - "1880:1880"       # Node-RED Admin UI
+    volumes:
+      - ./nodered/data:/data
+    restart: unless-stopped

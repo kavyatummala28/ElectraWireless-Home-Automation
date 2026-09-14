@@ -5,6 +5,8 @@ export const LG_KEYS = {
   VOL_UP: "VOLUMEUP",
   VOL_DOWN: "VOLUMEDOWN",
   MUTE: "MUTE",
+  CH_UP: "CHANNELUP",
+  CH_DOWN: "CHANNELDOWN",
   UP: "UP",
   DOWN: "DOWN",
   LEFT: "LEFT",
@@ -14,6 +16,25 @@ export const LG_KEYS = {
   HOME: "HOME",
   SOURCE: "INPUT",
 } as const;
+
+export const LG_APPS = {
+  NETFLIX: "netflix",
+  PRIME_VIDEO: "amazon",
+  YOUTUBE: "youtube.leanback.v4",
+  DISNEY_PLUS: "com.disney.disneyplus-prod",
+} as const;
+
+// D-pad navigation on webOS goes through a separate "pointer" WebSocket,
+// not the normal ssap:// request/response API. These are the exact
+// button names the TV expects on that channel.
+const POINTER_BUTTON_COMMANDS = new Set<string>([
+  LG_KEYS.UP,
+  LG_KEYS.DOWN,
+  LG_KEYS.LEFT,
+  LG_KEYS.RIGHT,
+  LG_KEYS.OK,
+  LG_KEYS.RETURN,
+]);
 
 const CLIENT_KEY_PREFIX = "lg_webos_client_key_";
 
@@ -146,24 +167,68 @@ export function connectLGTV(ip: string): Promise<boolean> {
 }
 
 /**
+ * Send a D-pad / pointer button press via the backend's dedicated button route.
+ */
+async function sendLGButton(ip: string, name: string): Promise<boolean> {
+  try {
+    const res = await fetch('http://localhost:3001/api/tv/button', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    return res.ok;
+  } catch (error) {
+    console.error('Failed to send button via backend proxy:', error);
+    return false;
+  }
+}
+
+/**
  * Send a webOS command to the LG TV via the Node backend proxy server.
  */
 export async function sendLGCommand(
   ip: string,
   command: string
 ): Promise<boolean> {
+  // Up/Down/Left/Right/OK/Back use the pointer socket, not the request API.
+  if (POINTER_BUTTON_COMMANDS.has(command)) {
+    return sendLGButton(ip, command);
+  }
+
   const uri = getLGCommandUri(command);
   if (!uri) return false;
+
+  const payload = getLGCommandPayload(command);
 
   try {
     const res = await fetch('http://localhost:3001/api/tv/command', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uri })
+      body: JSON.stringify(payload ? { uri, payload } : { uri })
     });
     return res.ok;
   } catch (error) {
     console.error('Failed to send command via backend proxy:', error);
+    return false;
+  }
+}
+
+/**
+ * Launch a specific webOS app directly (Netflix, Prime Video, YouTube, Disney+...).
+ */
+export async function launchLGApp(ip: string, appId: string): Promise<boolean> {
+  try {
+    const res = await fetch('http://localhost:3001/api/tv/command', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        uri: 'ssap://system.launcher/launch',
+        payload: { id: appId },
+      }),
+    });
+    return res.ok;
+  } catch (error) {
+    console.error('Failed to launch app via backend proxy:', error);
     return false;
   }
 }
@@ -182,29 +247,30 @@ function getLGCommandUri(command: string): string | null {
     case LG_KEYS.MUTE:
       return "ssap://audio/setMute";
 
+    case LG_KEYS.CH_UP:
+      return "ssap://tv/channelUp";
+
+    case LG_KEYS.CH_DOWN:
+      return "ssap://tv/channelDown";
+
     case LG_KEYS.HOME:
-      return "ssap://com.webos.applicationManager/launch";
+      return "ssap://system.launcher/launch";
 
-    case LG_KEYS.UP:
-      return "ssap://com.webos.service.ime/sendUpKey";
-
-    case LG_KEYS.DOWN:
-      return "ssap://com.webos.service.ime/sendDownKey";
-
-    case LG_KEYS.LEFT:
-      return "ssap://com.webos.service.ime/sendLeftKey";
-
-    case LG_KEYS.RIGHT:
-      return "ssap://com.webos.service.ime/sendRightKey";
-
-    case LG_KEYS.OK:
-      return "ssap://com.webos.service.ime/sendEnterKey";
-
-    case LG_KEYS.RETURN:
-      return "ssap://com.webos.service.ime/sendBackKey";
+    case LG_KEYS.SOURCE:
+      return "ssap://tv/switchInput";
 
     default:
       return null;
+  }
+}
+
+// A few commands need a JSON payload alongside the uri (e.g. launching the home screen)
+function getLGCommandPayload(command: string): Record<string, unknown> | undefined {
+  switch (command) {
+    case LG_KEYS.HOME:
+      return { id: "com.webos.app.home" };
+    default:
+      return undefined;
   }
 }
 

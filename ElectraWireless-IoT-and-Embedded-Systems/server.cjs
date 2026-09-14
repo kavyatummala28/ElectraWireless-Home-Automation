@@ -17,7 +17,7 @@ if (fs.existsSync(KEY_FILE)) {
 console.log('Starting LG TV Proxy Server...');
 
 const lgtv = createLgtv({
-  url: 'wss://192.168.0.109:3001',
+  url: 'wss://192.168.31.68:3001',
   clientKey: savedKey,
   wsconfig: { tlsOptions: { rejectUnauthorized: false } },
   saveKey: (key) => {
@@ -40,18 +40,41 @@ lgtv.on('error', err => {
 });
 
 app.post('/api/tv/command', (req, res) => {
-  const { uri } = req.body;
-  console.log('📥 Received command request from UI:', uri);
-  
+  const { uri, payload } = req.body;
+  console.log('📥 Received command request from UI:', uri, payload || '');
+
   if (!uri) return res.status(400).send({ error: 'Missing URI' });
-  
-  lgtv.request(uri, (err, response) => {
+
+  const callback = (err, response) => {
     if (err) {
       console.log('❌ TV Command Error:', err.message);
       return res.status(500).send({ error: err.message });
     }
     console.log('✅ Command executed successfully on TV!', response);
     res.send({ status: 'success', response });
+  };
+
+  if (payload) {
+    lgtv.request(uri, payload, callback);
+  } else {
+    lgtv.request(uri, callback);
+  }
+});
+
+app.post('/api/tv/button', (req, res) => {
+  const { name } = req.body;
+  console.log('🕹️ Received button press from UI:', name);
+
+  if (!name) return res.status(400).send({ error: 'Missing button name' });
+
+  lgtv.getSocket('ssap://com.webos.service.networkinput/getPointerInputSocket', (err, sock) => {
+    if (err) {
+      console.log('❌ Pointer socket error:', err.message);
+      return res.status(500).send({ error: err.message });
+    }
+    sock.send('button', { name });
+    console.log('✅ Button sent to TV:', name);
+    res.send({ status: 'success' });
   });
 });
 

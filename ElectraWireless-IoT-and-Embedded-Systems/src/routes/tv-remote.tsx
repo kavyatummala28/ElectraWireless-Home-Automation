@@ -26,19 +26,24 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useHome } from "@/lib/home/store";
-import { autoDiscoverPanasonicTV, sendPanasonicCommand, PANASONIC_KEYS } from "@/lib/panasonic";
-import { autoDiscoverSamsungTV, sendSamsungCommand, SAMSUNG_KEYS } from "@/lib/samsung";
-import { autoDiscoverLGTV, sendLGCommand, launchLGApp, LG_KEYS, LG_APPS } from "@/lib/lg-tv";
+import { sendPanasonicCommand, PANASONIC_KEYS } from "@/lib/panasonic";
+import { sendSamsungCommand, SAMSUNG_KEYS } from "@/lib/samsung";
+import { connectLGTV, sendLGCommand, launchLGApp, LG_KEYS, LG_APPS } from "@/lib/lg-tv";
+import { NearbyDevicesSheet } from "@/components/home/NearbyDevicesSheet";
+import { remoteBrandOf, type NearbyDevice } from "@/lib/tv/discovery";
+import { sendAndroidTvKey, launchAndroidTvApp, ANDROIDTV_KEYS, ANDROIDTV_APPS } from "@/lib/androidtv";
+import { isTvReachable } from "@/lib/tv/status";
 
 export const Route = createFileRoute("/tv-remote")({
   component: TvRemotePage,
 });
 
-type TvBrand = 'panasonic' | 'samsung' | 'lg' | null;
+type TvBrand = 'panasonic' | 'samsung' | 'lg' | 'androidtv' | null;
 type RemoteKeyId =
   | keyof typeof PANASONIC_KEYS
   | keyof typeof SAMSUNG_KEYS
-  | keyof typeof LG_KEYS;
+  | keyof typeof LG_KEYS
+  | keyof typeof ANDROIDTV_KEYS;
 
 function TvRemotePage() {
   const [tvOn, setTvOn] = useState(false);
@@ -47,12 +52,57 @@ function TvRemotePage() {
   const [tvBrand, setTvBrand] = useState<TvBrand>((localStorage.getItem("tv_brand") as TvBrand) || (localStorage.getItem("panasonic_ip") ? 'panasonic' : null));
   const [showKeypad, setShowKeypad] = useState(false);
   const { state } = useHome();
+  const [showNearby, setShowNearby] = useState(false);
+  const [tvName, setTvName] = useState<string | null>(localStorage.getItem("tv_name"));
+
+  // Open the "Nearby devices" scanner automatically when no TV is connected yet
+  useEffect(() => {
+    if (state.appMode === "live" && !tvIp) setShowNearby(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Live connection status: is the saved TV actually switched on and reachable?
+  type LinkState = "none" | "checking" | "online" | "offline";
+  const [link, setLink] = useState<LinkState>("none");
+
+  useEffect(() => {
+    if (state.appMode !== "live" || !tvIp || !tvBrand) { setLink("none"); return; }
+    let cancelled = false;
+    const check = async () => {
+      const ok = await isTvReachable(tvIp, tvBrand);
+      if (!cancelled) setLink(ok ? "online" : "offline");
+    };
+    setLink("checking");
+    check();
+    const timer = setInterval(check, 15000); // re-check every 15 s
+    return () => { cancelled = true; clearInterval(timer); };
+  }, [tvIp, tvBrand, state.appMode]);
+
+  const forgetTv = () => {
+    ["tv_ip", "tv_brand", "tv_name", "panasonic_ip"].forEach((k) => localStorage.removeItem(k));
+    setTvIp(null);
+    setTvBrand(null);
+    setTvName(null);
+    setShowManualEntry(false);
+    toast("TV removed");
+  };
+
+  const handleNearbyConnected = (d: NearbyDevice) => {
+    const brand = remoteBrandOf(d) as Exclude<TvBrand, null>;
+    setTvIp(d.ip);
+    setTvBrand(brand);
+    setTvName(d.name);
+    localStorage.setItem("tv_ip", d.ip);
+    localStorage.setItem("tv_brand", brand);
+    localStorage.setItem("tv_name", d.name);
+    toast.success(`Connected to ${d.name}`);
+  };
 
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [manualIp, setManualIp] = useState("");
   const [manualBrand, setManualBrand] = useState<Exclude<TvBrand, null>>("panasonic");
 
-  const connectManually = () => {
+  const connectManually = async () => {
     const ip = manualIp.trim();
     const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
     if (!ipPattern.test(ip)) {
@@ -69,7 +119,18 @@ function TvRemotePage() {
         ? "Panasonic"
         : manualBrand === "samsung"
           ? "Samsung"
-          : "LG webOS";
+          : manualBrand === "androidtv"
+            ? "Android TV"
+            : "LG webOS";
+
+    if (manualBrand === "lg") {
+      toast.info("Connecting to LG TV... if a popup appears on the TV, press Allow");
+      const ok = await connectLGTV(ip);
+      if (!ok) {
+        toast.error("Couldn't pair with the LG TV. Is the TV on and on the same Wi-Fi?");
+        return;
+      }
+    }
 
     toast.success(`Connected to ${brandName} TV at ${ip}`);
   };
@@ -97,6 +158,11 @@ function TvRemotePage() {
       if (keyCommand) {
         success = await sendLGCommand(tvIp, keyCommand);
       }
+    } else if (tvBrand === 'androidtv') {
+      const keyCommand = ANDROIDTV_KEYS[keyId as keyof typeof ANDROIDTV_KEYS];
+      if (keyCommand) {
+        success = await sendAndroidTvKey(tvIp, keyCommand);
+      }
     }
 
     if (!success) {
@@ -109,11 +175,18 @@ function TvRemotePage() {
   };
 
   const handleLaunchApp = async (name: string, appId: string) => {
-    if (state.appMode === "demo" || !tvIp || tvBrand !== "lg") {
+    if (state.appMode === "demo" || !tvIp || (tvBrand !== "lg" && tvBrand !== "androidtv")) {
       toast.success(`Opening ${name}`);
       return;
     }
-    const success = await launchLGApp(tvIp, appId);
+    let success = false;
+    if (tvBrand === "androidtv") {
+      const appKey = (Object.keys(LG_APPS) as (keyof typeof LG_APPS)[]).find((k) => LG_APPS[k] === appId);
+      const link = appKey ? ANDROIDTV_APPS[appKey as keyof typeof ANDROIDTV_APPS] : undefined;
+      success = link ? await launchAndroidTvApp(tvIp, link) : false;
+    } else {
+      success = await launchLGApp(tvIp, appId);
+    }
     if (success) {
       toast.success(`Opening ${name}`);
     } else {
@@ -121,44 +194,19 @@ function TvRemotePage() {
     }
   };
 
-  const startAutoDiscovery = async () => {
-    setIsScanning(true);
-    toast("Scanning local network for Smart TVs...");
-
-    let samsungIp = await autoDiscoverSamsungTV();
-    let panasonicIp = null;
-
-    if (!samsungIp) {
-      panasonicIp = await autoDiscoverPanasonicTV();
-    }
-
-    if (samsungIp) {
-      setTvIp(samsungIp);
-      setTvBrand('samsung');
-      localStorage.setItem("tv_ip", samsungIp);
-      localStorage.setItem("tv_brand", 'samsung');
-      toast.success(`Connected to Samsung TV at ${samsungIp}`);
-    } else if (panasonicIp) {
-      setTvIp(panasonicIp);
-      setTvBrand('panasonic');
-      localStorage.setItem("tv_ip", panasonicIp);
-      localStorage.setItem("tv_brand", 'panasonic');
-      toast.success(`Connected to Panasonic TV at ${panasonicIp}`);
-    } else {
-      toast.error("TV not found on network. Ensure 'Network Remote' is ON in TV settings.", {
-        duration: 8000,
-        icon: <AlertTriangle className="text-destructive h-5 w-5" />
-      });
-    }
-
-    setIsScanning(false);
+  const startAutoDiscovery = () => {
+    setShowNearby(true);
   };
 
   const getTvName = () => {
-    if (tvBrand === 'samsung') return "Samsung Smart TV";
-    if (tvBrand === 'panasonic') return "Panasonic Viera Smart TV";
-    if (tvBrand === 'lg') return "LG webOS Smart TV";
-    return "Smart TV Unpaired";
+    if (!tvIp || !tvBrand) return "No TV connected";
+    const brand =
+      tvBrand === "samsung" ? "Samsung"
+      : tvBrand === "panasonic" ? "Panasonic"
+      : tvBrand === "androidtv" ? "Android"
+      : "LG";
+    if (link === "offline") return `${brand} TV · not reachable`;
+    return `${brand} Smart TV`;
   };
 
   return (
@@ -170,7 +218,7 @@ function TvRemotePage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-xl font-extrabold tracking-tight">Living Room TV</h1>
+              <h1 className="text-xl font-extrabold tracking-tight">{tvIp ? tvName || "My TV" : "TV Remote"}</h1>
               <p className="text-sm font-medium text-muted-foreground">{getTvName()}</p>
             </div>
           </div>
@@ -182,14 +230,14 @@ function TvRemotePage() {
                 disabled={isScanning}
                 className={cn(
                   "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all border",
-                  tvIp
-                    ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20"
-                    : "bg-blue-500/10 text-blue-500 border-blue-500/30 hover:bg-blue-500/20",
-                  isScanning && "opacity-50 cursor-not-allowed animate-pulse"
+                  link === "online" && "bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20",
+                  link === "offline" && "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20",
+                  link === "checking" && "bg-secondary/60 text-muted-foreground border-border/30 animate-pulse",
+                  link === "none" && "bg-blue-500/10 text-blue-500 border-blue-500/30 hover:bg-blue-500/20",
                 )}
               >
-                {isScanning ? <Search className="w-3.5 h-3.5 animate-spin" /> : <Wifi className="w-3.5 h-3.5" />}
-                {isScanning ? "SCANNING..." : tvIp ? "CONNECTED" : "AUTO-CONNECT"}
+                {link === "checking" ? <Search className="w-3.5 h-3.5 animate-spin" /> : <Wifi className="w-3.5 h-3.5" />}
+                {link === "online" ? "CONNECTED" : link === "offline" ? "OFFLINE" : link === "checking" ? "CHECKING…" : "SEARCH NEARBY"}
               </button>
               <button
                 onClick={() => { setManualIp(tvIp || ""); setManualBrand(tvBrand || "panasonic"); setShowManualEntry(true); }}
@@ -222,6 +270,7 @@ function TvRemotePage() {
                 <option value="panasonic">Panasonic</option>
                 <option value="samsung">Samsung</option>
                 <option value="lg">LG webOS</option>
+                <option value="androidtv">Android / Google TV</option>
               </select>
               <input
                 type="text"
@@ -238,26 +287,30 @@ function TvRemotePage() {
             >
               Connect
             </button>
+            {tvIp && (
+              <button
+                onClick={forgetTv}
+                className="w-full py-2 text-xs font-semibold text-destructive hover:underline"
+              >
+                Forget this TV
+              </button>
+            )}
           </div>
         )}
 
         <div className="pt-5 flex flex-col items-center gap-5 rounded-[2.5rem] border border-border/20 glass-card p-6 mx-auto max-w-[320px] shadow-sm relative overflow-hidden">
 
-          {state.appMode === "live" && !tvIp && !isScanning && (
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center p-6 text-center">
-              <Wifi className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
-              <h3 className="font-bold text-lg mb-2">TV Not Connected</h3>
-              <p className="text-sm text-muted-foreground mb-6">Tap Auto-Connect to scan your local Wi-Fi for your Smart TV.</p>
-              <button onClick={startAutoDiscovery} className="px-6 py-3 bg-blue-500 text-white rounded-[1rem] font-bold shadow-[0_0_20px_rgba(59,130,246,0.4)] active:scale-95 transition-all">
-                Start Scan
-              </button>
-              <button
-                onClick={() => { setManualIp(""); setManualBrand("panasonic"); setShowManualEntry(true); }}
-                className="mt-3 text-xs font-semibold text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
-              >
-                Or enter TV IP manually
-              </button>
-            </div>
+          {state.appMode === "live" && !tvIp && (
+            <button
+              onClick={startAutoDiscovery}
+              className="w-full flex items-center gap-3 rounded-2xl border border-blue-500/30 bg-blue-500/10 p-3 text-left active:scale-[0.98] transition"
+            >
+              <Wifi className="w-5 h-5 text-blue-500 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-bold">No TV connected</p>
+                <p className="text-xs text-muted-foreground">Tap to search nearby TVs</p>
+              </div>
+            </button>
           )}
 
           <div className="flex items-center justify-between w-full">
@@ -296,7 +349,7 @@ function TvRemotePage() {
             <button onClick={() => handleAction('Down', 'DOWN')} className="absolute bottom-2 w-16 h-12 flex items-center justify-center rounded-[1.5rem] hover:bg-secondary/50 active:bg-secondary transition text-foreground/80"><ChevronDown className="w-7 h-7" /></button>
             <button onClick={() => handleAction('Left', 'LEFT')} className="absolute left-2 w-12 h-16 flex items-center justify-center rounded-[1.5rem] hover:bg-secondary/50 active:bg-secondary transition text-foreground/80"><ChevronLeft className="w-7 h-7" /></button>
             <button onClick={() => handleAction('Right', 'RIGHT')} className="absolute right-2 w-12 h-16 flex items-center justify-center rounded-[1.5rem] hover:bg-secondary/50 active:bg-secondary transition text-foreground/80"><ChevronRight className="w-7 h-7" /></button>
-            <button onClick={() => handleAction('OK', 'OK')} className="w-[4.5rem] h-[4.5rem] rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center font-bold text-base active:scale-95 transition shadow-sm border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]">OK</button>
+            <button onClick={() => handleAction('OK', 'OK')} className="w-[4.5rem] h-[4.5rem] rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center font-bold text-base active:scale-95 transition border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]">OK</button>
           </div>
 
           <div className="flex items-center justify-center gap-4 w-full">
@@ -373,6 +426,7 @@ function TvRemotePage() {
 
         </div>
       </div>
+      <NearbyDevicesSheet open={showNearby} onOpenChange={setShowNearby} onConnected={handleNearbyConnected} />
     </div>
   );
 }

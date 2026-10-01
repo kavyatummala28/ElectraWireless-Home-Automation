@@ -1,8 +1,7 @@
 export function Logo({ className = "w-10 h-10" }: { className?: string }) {
   return (
     <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
-      {/* Background */}
-      <rect width="100" height="100" fill="#000000" rx="20" />
+    
       {/* Concentric Circles */}
       <circle cx="50" cy="50" r="45" fill="#7c3aed" />
       <circle cx="50" cy="50" r="35" fill="#8b5cf6" />

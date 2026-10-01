@@ -270,18 +270,6 @@ function Dashboard() {
           </div>
         </div>
       </div>
-
-      {/* Protocol Badge Strip */}
-      <div className="relative z-10 rounded-[1.5rem] glass-card p-4 shadow-sm">
-        <p className="text-primary font-mono text-[10px] tracking-[0.2em] uppercase mb-3">Universal Bridge · 60+ Protocols Active</p>
-        <div className="flex flex-wrap gap-1.5">
-          {["Tuya", "Shelly", "Hue", "ESPHome", "Z-Wave", "Zigbee", "Sonos", "Roku", "LG TV", "Samsung", "IKEA", "Nest", "Ring", "WLED", "Kodi", "+45 more"].map(p => (
-            <span key={p} className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-primary/20 text-primary bg-primary/5">
-              {p}
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -328,7 +316,7 @@ function EmergencyAction({ onConfirm, disabled }: { onConfirm: () => void; disab
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <div className="w-full">
-          <EllyBtn icon={OctagonAlert} label="Lockdown" sublabel="Override systems" disabled={disabled} color="red" />
+                      <EllyBtn icon={OctagonAlert} label="Lockdown" sublabel="Override systems" disabled={disabled} color="red" onClick={() => {}} />
         </div>
       </AlertDialogTrigger>
       <AlertDialogContent className="glass-card border border-destructive/40 text-foreground max-w-sm">

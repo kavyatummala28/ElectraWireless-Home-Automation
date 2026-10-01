@@ -3,12 +3,14 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { lanBridge } from "./vite-lan-bridge";
 
 export default defineConfig({
   plugins: [
     TanStackRouterVite(),
     react(),
     tailwindcss(),
-    viteTsconfigPaths()
+    viteTsconfigPaths(),
+    lanBridge(), // lets the browser find & control TVs during `npm run dev`
   ],
 });

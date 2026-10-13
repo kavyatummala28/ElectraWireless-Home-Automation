@@ -9,136 +9,36 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TvRemoteRouteImport } from './routes/tv-remote'
-import { Route as SettingsUsersRouteImport } from './routes/settings-users'
-import { Route as SettingsSafetyRouteImport } from './routes/settings-safety'
-import { Route as SettingsNetworkRouteImport } from './routes/settings-network'
-import { Route as SettingsGatewaysRouteImport } from './routes/settings-gateways'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SelectDeviceRouteImport } from './routes/select-device'
-import { Route as RoomsRouteImport } from './routes/rooms'
-import { Route as RemotesRouteImport } from './routes/remotes'
-import { Route as MapRouteImport } from './routes/map'
-import { Route as FridgeRemoteRouteImport } from './routes/fridge-remote'
-import { Route as EnergyRouteImport } from './routes/energy'
-import { Route as DevicesRouteImport } from './routes/devices'
-import { Route as ConsoleRemoteRouteImport } from './routes/console-remote'
-import { Route as CameraRouteImport } from './routes/camera'
-import { Route as AutomationsRouteImport } from './routes/automations'
-import { Route as AudioRemoteRouteImport } from './routes/audio-remote'
-import { Route as AllDevicesRouteImport } from './routes/all-devices'
-import { Route as AddRoomRouteImport } from './routes/add-room'
-import { Route as AddDeviceRouteImport } from './routes/add-device'
-import { Route as ActivityRouteImport } from './routes/activity'
-import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RoomRoomIdRouteImport } from './routes/room.$roomId'
-import { Route as DeviceDeviceIdRouteImport } from './routes/device.$deviceId'
+import { Route as ActionsRouteImport } from './routes/actions'
+import { Route as ActivityRouteImport } from './routes/activity'
+import { Route as AddDeviceRouteImport } from './routes/add-device'
+import { Route as AddRoomRouteImport } from './routes/add-room'
+import { Route as AllDevicesRouteImport } from './routes/all-devices'
+import { Route as AudioRemoteRouteImport } from './routes/audio-remote'
+import { Route as AutomationsRouteImport } from './routes/automations'
+import { Route as CameraRouteImport } from './routes/camera'
+import { Route as ConsoleRemoteRouteImport } from './routes/console-remote'
+import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as EnergyRouteImport } from './routes/energy'
+import { Route as FridgeRemoteRouteImport } from './routes/fridge-remote'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as RemotesRouteImport } from './routes/remotes'
+import { Route as RoomsRouteImport } from './routes/rooms'
+import { Route as SelectDeviceRouteImport } from './routes/select-device'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SettingsGatewaysRouteImport } from './routes/settings-gateways'
+import { Route as SettingsNetworkRouteImport } from './routes/settings-network'
+import { Route as SettingsSafetyRouteImport } from './routes/settings-safety'
+import { Route as SettingsUsersRouteImport } from './routes/settings-users'
+import { Route as TvRemoteRouteImport } from './routes/tv-remote'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as DeviceDeviceIdRouteImport } from './routes/device.$deviceId'
+import { Route as RoomRoomIdRouteImport } from './routes/room.$roomId'
 
-const TvRemoteRoute = TvRemoteRouteImport.update({
-  id: '/tv-remote',
-  path: '/tv-remote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsUsersRoute = SettingsUsersRouteImport.update({
-  id: '/settings-users',
-  path: '/settings-users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsSafetyRoute = SettingsSafetyRouteImport.update({
-  id: '/settings-safety',
-  path: '/settings-safety',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsNetworkRoute = SettingsNetworkRouteImport.update({
-  id: '/settings-network',
-  path: '/settings-network',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsGatewaysRoute = SettingsGatewaysRouteImport.update({
-  id: '/settings-gateways',
-  path: '/settings-gateways',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SelectDeviceRoute = SelectDeviceRouteImport.update({
-  id: '/select-device',
-  path: '/select-device',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoomsRoute = RoomsRouteImport.update({
-  id: '/rooms',
-  path: '/rooms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RemotesRoute = RemotesRouteImport.update({
-  id: '/remotes',
-  path: '/remotes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapRoute = MapRouteImport.update({
-  id: '/map',
-  path: '/map',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FridgeRemoteRoute = FridgeRemoteRouteImport.update({
-  id: '/fridge-remote',
-  path: '/fridge-remote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnergyRoute = EnergyRouteImport.update({
-  id: '/energy',
-  path: '/energy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevicesRoute = DevicesRouteImport.update({
-  id: '/devices',
-  path: '/devices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConsoleRemoteRoute = ConsoleRemoteRouteImport.update({
-  id: '/console-remote',
-  path: '/console-remote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CameraRoute = CameraRouteImport.update({
-  id: '/camera',
-  path: '/camera',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AutomationsRoute = AutomationsRouteImport.update({
-  id: '/automations',
-  path: '/automations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AudioRemoteRoute = AudioRemoteRouteImport.update({
-  id: '/audio-remote',
-  path: '/audio-remote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AllDevicesRoute = AllDevicesRouteImport.update({
-  id: '/all-devices',
-  path: '/all-devices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AddRoomRoute = AddRoomRouteImport.update({
-  id: '/add-room',
-  path: '/add-room',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AddDeviceRoute = AddDeviceRouteImport.update({
-  id: '/add-device',
-  path: '/add-device',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActivityRoute = ActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActionsRoute = ActionsRouteImport.update({
@@ -146,14 +46,114 @@ const ActionsRoute = ActionsRouteImport.update({
   path: '/actions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ActivityRoute = ActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RoomRoomIdRoute = RoomRoomIdRouteImport.update({
-  id: '/room/$roomId',
-  path: '/room/$roomId',
+const AddDeviceRoute = AddDeviceRouteImport.update({
+  id: '/add-device',
+  path: '/add-device',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AddRoomRoute = AddRoomRouteImport.update({
+  id: '/add-room',
+  path: '/add-room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AllDevicesRoute = AllDevicesRouteImport.update({
+  id: '/all-devices',
+  path: '/all-devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AudioRemoteRoute = AudioRemoteRouteImport.update({
+  id: '/audio-remote',
+  path: '/audio-remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationsRoute = AutomationsRouteImport.update({
+  id: '/automations',
+  path: '/automations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CameraRoute = CameraRouteImport.update({
+  id: '/camera',
+  path: '/camera',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleRemoteRoute = ConsoleRemoteRouteImport.update({
+  id: '/console-remote',
+  path: '/console-remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnergyRoute = EnergyRouteImport.update({
+  id: '/energy',
+  path: '/energy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FridgeRemoteRoute = FridgeRemoteRouteImport.update({
+  id: '/fridge-remote',
+  path: '/fridge-remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RemotesRoute = RemotesRouteImport.update({
+  id: '/remotes',
+  path: '/remotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoomsRoute = RoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SelectDeviceRoute = SelectDeviceRouteImport.update({
+  id: '/select-device',
+  path: '/select-device',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsGatewaysRoute = SettingsGatewaysRouteImport.update({
+  id: '/settings-gateways',
+  path: '/settings-gateways',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsNetworkRoute = SettingsNetworkRouteImport.update({
+  id: '/settings-network',
+  path: '/settings-network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsSafetyRoute = SettingsSafetyRouteImport.update({
+  id: '/settings-safety',
+  path: '/settings-safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsUsersRoute = SettingsUsersRouteImport.update({
+  id: '/settings-users',
+  path: '/settings-users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TvRemoteRoute = TvRemoteRouteImport.update({
+  id: '/tv-remote',
+  path: '/tv-remote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeviceDeviceIdRoute = DeviceDeviceIdRouteImport.update({
@@ -161,9 +161,9 @@ const DeviceDeviceIdRoute = DeviceDeviceIdRouteImport.update({
   path: '/device/$deviceId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+const RoomRoomIdRoute = RoomRoomIdRouteImport.update({
+  id: '/room/$roomId',
+  path: '/room/$roomId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -370,151 +370,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tv-remote': {
-      id: '/tv-remote'
-      path: '/tv-remote'
-      fullPath: '/tv-remote'
-      preLoaderRoute: typeof TvRemoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings-users': {
-      id: '/settings-users'
-      path: '/settings-users'
-      fullPath: '/settings-users'
-      preLoaderRoute: typeof SettingsUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings-safety': {
-      id: '/settings-safety'
-      path: '/settings-safety'
-      fullPath: '/settings-safety'
-      preLoaderRoute: typeof SettingsSafetyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings-network': {
-      id: '/settings-network'
-      path: '/settings-network'
-      fullPath: '/settings-network'
-      preLoaderRoute: typeof SettingsNetworkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings-gateways': {
-      id: '/settings-gateways'
-      path: '/settings-gateways'
-      fullPath: '/settings-gateways'
-      preLoaderRoute: typeof SettingsGatewaysRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/select-device': {
-      id: '/select-device'
-      path: '/select-device'
-      fullPath: '/select-device'
-      preLoaderRoute: typeof SelectDeviceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rooms': {
-      id: '/rooms'
-      path: '/rooms'
-      fullPath: '/rooms'
-      preLoaderRoute: typeof RoomsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/remotes': {
-      id: '/remotes'
-      path: '/remotes'
-      fullPath: '/remotes'
-      preLoaderRoute: typeof RemotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/map': {
-      id: '/map'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fridge-remote': {
-      id: '/fridge-remote'
-      path: '/fridge-remote'
-      fullPath: '/fridge-remote'
-      preLoaderRoute: typeof FridgeRemoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/energy': {
-      id: '/energy'
-      path: '/energy'
-      fullPath: '/energy'
-      preLoaderRoute: typeof EnergyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/devices': {
-      id: '/devices'
-      path: '/devices'
-      fullPath: '/devices'
-      preLoaderRoute: typeof DevicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/console-remote': {
-      id: '/console-remote'
-      path: '/console-remote'
-      fullPath: '/console-remote'
-      preLoaderRoute: typeof ConsoleRemoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/camera': {
-      id: '/camera'
-      path: '/camera'
-      fullPath: '/camera'
-      preLoaderRoute: typeof CameraRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/automations': {
-      id: '/automations'
-      path: '/automations'
-      fullPath: '/automations'
-      preLoaderRoute: typeof AutomationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/audio-remote': {
-      id: '/audio-remote'
-      path: '/audio-remote'
-      fullPath: '/audio-remote'
-      preLoaderRoute: typeof AudioRemoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/all-devices': {
-      id: '/all-devices'
-      path: '/all-devices'
-      fullPath: '/all-devices'
-      preLoaderRoute: typeof AllDevicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/add-room': {
-      id: '/add-room'
-      path: '/add-room'
-      fullPath: '/add-room'
-      preLoaderRoute: typeof AddRoomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/add-device': {
-      id: '/add-device'
-      path: '/add-device'
-      fullPath: '/add-device'
-      preLoaderRoute: typeof AddDeviceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/activity': {
-      id: '/activity'
-      path: '/activity'
-      fullPath: '/activity'
-      preLoaderRoute: typeof ActivityRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/actions': {
@@ -524,18 +384,158 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/room/$roomId': {
-      id: '/room/$roomId'
-      path: '/room/$roomId'
-      fullPath: '/room/$roomId'
-      preLoaderRoute: typeof RoomRoomIdRouteImport
+    '/add-device': {
+      id: '/add-device'
+      path: '/add-device'
+      fullPath: '/add-device'
+      preLoaderRoute: typeof AddDeviceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/add-room': {
+      id: '/add-room'
+      path: '/add-room'
+      fullPath: '/add-room'
+      preLoaderRoute: typeof AddRoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/all-devices': {
+      id: '/all-devices'
+      path: '/all-devices'
+      fullPath: '/all-devices'
+      preLoaderRoute: typeof AllDevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audio-remote': {
+      id: '/audio-remote'
+      path: '/audio-remote'
+      fullPath: '/audio-remote'
+      preLoaderRoute: typeof AudioRemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automations': {
+      id: '/automations'
+      path: '/automations'
+      fullPath: '/automations'
+      preLoaderRoute: typeof AutomationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/camera': {
+      id: '/camera'
+      path: '/camera'
+      fullPath: '/camera'
+      preLoaderRoute: typeof CameraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/console-remote': {
+      id: '/console-remote'
+      path: '/console-remote'
+      fullPath: '/console-remote'
+      preLoaderRoute: typeof ConsoleRemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/energy': {
+      id: '/energy'
+      path: '/energy'
+      fullPath: '/energy'
+      preLoaderRoute: typeof EnergyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fridge-remote': {
+      id: '/fridge-remote'
+      path: '/fridge-remote'
+      fullPath: '/fridge-remote'
+      preLoaderRoute: typeof FridgeRemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/remotes': {
+      id: '/remotes'
+      path: '/remotes'
+      fullPath: '/remotes'
+      preLoaderRoute: typeof RemotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rooms': {
+      id: '/rooms'
+      path: '/rooms'
+      fullPath: '/rooms'
+      preLoaderRoute: typeof RoomsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/select-device': {
+      id: '/select-device'
+      path: '/select-device'
+      fullPath: '/select-device'
+      preLoaderRoute: typeof SelectDeviceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings-gateways': {
+      id: '/settings-gateways'
+      path: '/settings-gateways'
+      fullPath: '/settings-gateways'
+      preLoaderRoute: typeof SettingsGatewaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings-network': {
+      id: '/settings-network'
+      path: '/settings-network'
+      fullPath: '/settings-network'
+      preLoaderRoute: typeof SettingsNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings-safety': {
+      id: '/settings-safety'
+      path: '/settings-safety'
+      fullPath: '/settings-safety'
+      preLoaderRoute: typeof SettingsSafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings-users': {
+      id: '/settings-users'
+      path: '/settings-users'
+      fullPath: '/settings-users'
+      preLoaderRoute: typeof SettingsUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tv-remote': {
+      id: '/tv-remote'
+      path: '/tv-remote'
+      fullPath: '/tv-remote'
+      preLoaderRoute: typeof TvRemoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/device/$deviceId': {
@@ -545,11 +545,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeviceDeviceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/room/$roomId': {
+      id: '/room/$roomId'
+      path: '/room/$roomId'
+      fullPath: '/room/$roomId'
+      preLoaderRoute: typeof RoomRoomIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -13,4 +13,7 @@ export default defineConfig({
     viteTsconfigPaths(),
     lanBridge(), // lets the browser find & control TVs during `npm run dev`
   ],
+  server: {
+    allowedHosts: true, // allow the ngrok link to open the app
+  },
 });
